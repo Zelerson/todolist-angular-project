@@ -18,4 +18,8 @@ export class TasksService {
   getTask(taskId: string): Observable<TaskModel> {
     return this.http.get<TaskModel>(`${environment.apiUrls.tasks}/${taskId}`)
   }
+
+  postTask(taskModel: TaskModel) {
+    this.http.post(environment.apiUrls.tasks, taskModel, {'headers': this.header}).subscribe()
+  }
 }

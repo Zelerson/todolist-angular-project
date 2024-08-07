@@ -1,54 +1,77 @@
-<div class="container">
-  @for (project of projectData$ | async; track $index) {
-  <div class="accordion m-1" id="{{ project.id }}">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="heading{{ project.id }}">
-        <button
-          class="accordion-button"
-          type="button"
-          data-bs-toggle="collapse"
-          [attr.data-bs-target]="'#collapse' + project.id"
-          aria-expanded="true"
-          [attr.aria-controls]="'collapse' + project.id"
-        >
-          {{ project.name }}
-        </button>
-      </h2>
-      <div
-        id="collapse{{ project.id }}"
-        class="accordion-collapse collapse show"
-        [attr.aria-labelledby]="'heading' + project.id"
-        data-bs-parent="#accordionExample"
-      >
-        <div class="accordion-body">
-          @for (task of taskData$ | async; track $index) { @if (task.project_id
-          === project.id) {
-          <div class="container m-2">
-            <div class="card">
-              <div class="card-header d-flex flex-row align-items-center">
-                <div class="d-flex flex-grow-1">
-                  <span class="lead">{{
-                    task.created_at | date : "medium"
-                  }}</span>
-                </div>
-                <div class="d-flex justify-content-end">
-                  @for (label of task.labels; track $index) {
-                  <span class="badge text-bg-info m-1">{{ label }}</span>
-                  }
-                </div>
-              </div>
-              <div class="card-body">
-                <p class="">{{ task.content }}</p>
-                <small class="text-body-secondary">{{
-                  task.description
-                }}</small>
-              </div>
-            </div>
-          </div>
-          } }
+<div class="d-flex">
+  <div class="d-flex flex-column sidebar border p-4">
+    @for(project of projectData$ | async; track $index) {
+    <button
+      type="button"
+      (click)="projectSelector(project.id)"
+      class="btn btn-outline-primary mb-2"
+    >
+      {{ project.name }}
+    </button>
+    }
+    <button
+      type="button"
+      (click)="projectSelected = 'createTask'"
+      class="btn btn-outline-warning mb-2"
+    >
+      Create task
+    </button>
+  </div>
+
+  <div class="container d-flex flex-column">
+    @for(task of taskData$ | async; track $index) { @if (projectSelected ===
+    task.project_id) {
+    <div class="card m-2">
+      <div class="card-header d-flex flex-row align-items-center">
+        <div class="d-flex flex-grow-1">
+          <span class="lead">{{ task.created_at | date : "medium" }}</span>
+        </div>
+        <div class="d-flex justify-content-end">
+          @for (label of task.labels; track $index) {
+          <span class="badge text-bg-info m-1">{{ label }}</span>
+          }
         </div>
       </div>
+      <div class="card-body">
+        <p class="">{{ task.content }}</p>
+        <small class="text-body-secondary">{{ task.description }}</small>
+      </div>
     </div>
+    } } @if (projectSelected === "createTask") {
+    <form #form="ngForm" (ngSubmit)="taskFormSubmit(taskPostModel)">
+      <div class="d-flex flex-column m-2">
+        <label for="project">Select project</label>
+        <select
+          class="form-control"
+          name="project"
+          id="project"
+          [(ngModel)]="taskPostModel.project_id"
+        >
+          @for (project of projectData$ | async; track $index) {
+          <option [value]="project.id">{{ project.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="d-flex flex-column m-2">
+        <label for="content">Content</label>
+        <textarea
+          class="form-control"
+          name="content"
+          id="content"
+          [(ngModel)]="taskPostModel.content"
+        ></textarea>
+      </div>
+      <div class="d-flex justify-content-end m-2">
+        <button
+          type="button"
+          class="btn btn-primary m-1"
+          (click)="projectSelected = ''"
+        >
+          Back
+        </button>
+        <button type="submit" class="btn btn-primary m-1">Create task</button>
+      </div>
+    </form>
+    }
   </div>
-  }
 </div>

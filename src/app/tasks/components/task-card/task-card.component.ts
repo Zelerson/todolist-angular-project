@@ -1,13 +1,13 @@
-import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { TaskModel } from '../../models/task.model';
 
 @Component({
   selector: 'app-task-card',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, DatePipe],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.scss'
 })
 export class TaskCardComponent {
-
+  @Input({required: true}) task!: TaskModel;
 }

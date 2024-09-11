@@ -1,40 +1,31 @@
 import { AsyncPipe, CommonModule, DatePipe} from '@angular/common';
-import { Component, inject} from '@angular/core';
-import { TasksService } from '../../services/tasks.service';
-import { Observable} from 'rxjs';
+import { Component, inject, Input, OnInit} from '@angular/core';
+import { TodoistService } from '../../services/todoist.service';
+import { Observable, of, switchMap} from 'rxjs';
 import { TaskModel } from '../../models/task.model';
-import { ProjectsService } from '../../../projects/project.service';
-import { ProjectModel } from '../../../projects/project.model';
 import { FormsModule } from '@angular/forms';
+import { TaskCardComponent } from '../task-card/task-card.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, FormsModule, CommonModule],
+  imports: [AsyncPipe, DatePipe, FormsModule, CommonModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
-  styleUrl: './task-list.component.scss'
 })
 export class TaskListComponent {
-  private taskService: TasksService = inject(TasksService)
-  private projectService: ProjectsService = inject(ProjectsService)
-  readonly taskData$: Observable<TaskModel[]> = this.taskService.getTasks()
-  readonly projectData$: Observable<ProjectModel[]> = this.projectService.getProjects()
+  routeParams = inject(ActivatedRoute)
+  private todoistService: TodoistService = inject(TodoistService)
 
-  taskPostModel: TaskModel = {
-    content: "",
-    project_id: ""
+  taskData$: Observable<TaskModel[]> = of()
+
+  @Input() set projectId(projectId: string) {
+      this.taskData$ = this.todoistService.getTasks(projectId)
   }
 
-  projectSelected?: string = ""
+  // taskData$: Observable<TaskModel[]> = this.routeParams.params.pipe(switchMap(params => 
+  //   this.todoistService.getTasks(params["projectId"])
+  // ))
 
-  projectSelector(projectId: string){
-    this.projectSelected = projectId
-    console.log(this.projectSelected)
-  }
-
-  taskFormSubmit(taskPostModel: TaskModel){
-    this.taskService.postTask(taskPostModel)
-    this.projectSelected = taskPostModel.project_id
-  }
   
 }

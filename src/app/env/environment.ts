@@ -4,6 +4,7 @@ export const environment = {
     },
     apiUrls: {
         tasks: "https://api.todoist.com/rest/v2/tasks",
-        projects: "https://api.todoist.com/rest/v2/projects"
+        projects: "https://api.todoist.com/rest/v2/projects",
+        sections: "https://api.todoist.com/rest/v2/sections"
     }
 }

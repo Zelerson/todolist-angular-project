@@ -1,0 +1,39 @@
+<div class="">
+  <form #form="ngForm" (ngSubmit)="taskFormSubmit(taskPostModel)">
+    <div class="d-flex flex-column m-2">
+      <label for="project">Select project</label>
+      <select
+        class="form-control"
+        name="project"
+        id="project"
+        [(ngModel)]="taskPostModel.project_id"
+      >
+        @for (project of projectData$ | async; track $index) {
+        <option [value]="project.id">{{ project.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="d-flex flex-column m-2">
+      <label for="content">Content</label>
+      <textarea
+        class="form-control"
+        name="content"
+        id="content"
+        [(ngModel)]="taskPostModel.content"
+      ></textarea>
+      <label for="description">Description</label>
+      <textarea
+        class="form-control"
+        name="description"
+        id="description"
+        [(ngModel)]="taskPostModel.description"
+      ></textarea>
+    </div>
+    <div class="d-flex justify-content-end m-2">
+      <button type="button" class="btn btn-primary m-1" [routerLink]="['']">
+        Back
+      </button>
+      <button type="submit" class="btn btn-primary m-1">Create task</button>
+    </div>
+  </form>
+</div>
